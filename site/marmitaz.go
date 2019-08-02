@@ -27,6 +27,11 @@ func TemperoDeMaeIsOpen() bool {
 		}
 	})
 
+	// Set error handler
+	c.OnError(func(r *colly.Response, err error) {
+		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	})
+
 	c.Visit("https://marmitaz.pushsistemas.com.br/")
 
 	return exist

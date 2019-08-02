@@ -7,8 +7,8 @@ import (
 	"github.com/gocolly/colly"
 )
 
-// TemperoDeMaeExists returns a bool if the restaurant is open or not
-func TemperoDeMaeExists() bool {
+// TemperoDeMaeIsOpen returns a bool if the restaurant is open or not
+func TemperoDeMaeIsOpen() bool {
 
 	exist := false
 
@@ -23,7 +23,7 @@ func TemperoDeMaeExists() bool {
 		log.Printf("Link found: %s\n", e.Attr("href"))
 
 		if e.Text == "Pedidos Açaí" || e.Attr("href") == "pedidos_acai.php" {
-			exist = true
+			exist = false
 		}
 	})
 

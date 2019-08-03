@@ -1,33 +1,38 @@
 package main
 
 import (
+	"log"
 	"marmitaz-telegram-bot/site"
+	"marmitaz-telegram-bot/telegram"
 	"os"
 
+	"github.com/robfig/cron"
 	"github.com/yanzay/tbot/v2"
 )
 
-var client *tbot.Client
+var (
+	chatID = os.Getenv("TELEGRAM_CHAT_ID")
+	token  = os.Getenv("TELEGRAM_BOT_TOKEN")
+	client *tbot.Client
+)
 
 func main() {
-	// c := cron.New()
-	token := os.Getenv("TELEGRAM_BOT_TOKEN")
-	bot := tbot.New(token)
+	bot := tbot.New(token, tbot.WithLogger(tbot.BasicLogger{}))
 	client = bot.Client()
 
-	bot.HandleMessage("/status", statusHandler)
-	bot.HandleMessage("/help", helpHandler)
+	c := cron.New()
+	c.AddFunc("30 * * * * *", func() {
+		if site.TemperoDeMaeIsOpen() {
+			client.SendMessage(chatID, "Open")
+		} else {
+			client.SendMessage(chatID, "Closed")
+		}
+	})
+	c.Start()
+
+	log.Println(c.Entries())
+
+	bot.HandleMessage("/status", telegram.StatusHandler)
+	bot.HandleMessage("/help", telegram.HelpHandler)
 	bot.Start()
-}
-
-func statusHandler(message *tbot.Message) {
-	if site.TemperoDeMaeIsOpen() {
-		client.SendMessage(message.Chat.ID, "O restaurante está aberto. Faça seu pedido")
-	} else {
-		client.SendMessage(message.Chat.ID, "O restaurante está fechado.")
-	}
-}
-
-func helpHandler(message *tbot.Message) {
-	client.SendMessage(message.Chat.ID, "Type /status")
 }

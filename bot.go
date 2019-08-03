@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/robfig/cron"
 	log "github.com/sirupsen/logrus"
@@ -11,7 +12,7 @@ import (
 )
 
 var token = os.Getenv("TELEGRAM_BOT_TOKEN")
-var chatID int64 = 123
+var chatID, _ = strconv.ParseInt(os.Getenv("TELEGRAM_BOT_TOKEN"), 10, 64)
 
 func main() {
 	// For better logging

@@ -12,7 +12,7 @@ import (
 )
 
 var token = os.Getenv("TELEGRAM_BOT_TOKEN")
-var chatID, _ = strconv.ParseInt(os.Getenv("TELEGRAM_BOT_TOKEN"), 10, 64)
+var chatID, _ = strconv.ParseInt(os.Getenv("TELEGRAM_CHAT_ID"), 10, 64)
 
 func main() {
 	// For better logging

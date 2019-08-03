@@ -1,7 +1,7 @@
 package telegram
 
 import (
-	"marmitaz-telegram-bot/site"
+	"github.com/Valeyard1/marmitaz-telegram-bot/site"
 
 	"github.com/yanzay/tbot/v2"
 )
@@ -20,4 +20,9 @@ func StatusHandler(message *tbot.Message) {
 // HelpHandler handle /help incoming messages
 func HelpHandler(message *tbot.Message) {
 	client.SendMessage(message.Chat.ID, "Digite /status")
+}
+
+// StartHandler handle /start incoming messages
+func StartHandler(message *tbot.Message) {
+	client.SendMessage(message.Chat.ID, "Sou uma interface para o site de restaurantes marmitaz.pushsistemas.com.br\nPara mais informações digite /help")
 }

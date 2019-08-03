@@ -25,7 +25,7 @@ func main() {
 	log.Println(chatID, token)
 
 	c := cron.New()
-	c.AddFunc("30 * * * * *", func() {
+	c.AddFunc("0 7-12 * * 1-5", func() {
 		if site.TemperoDeMaeIsOpen() {
 			client.SendMessage(chatID, "Open")
 		} else {

@@ -11,8 +11,15 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-var token = os.Getenv("TELEGRAM_BOT_TOKEN")
-var chatID, _ = strconv.ParseInt(os.Getenv("TELEGRAM_CHAT_ID"), 10, 64)
+var (
+	openRestaurantKeyboard = tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonURL("marmitaz.com", "https://marmitaz.pushsistemas.com.br/"),
+		),
+	)
+	token     = os.Getenv("TELEGRAM_BOT_TOKEN")
+	chatID, _ = strconv.ParseInt(os.Getenv("TELEGRAM_CHAT_ID"), 10, 64)
+)
 
 func main() {
 	// For better logging
@@ -23,7 +30,7 @@ func main() {
 
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
 	}
 
 	bot.Debug = false
@@ -64,7 +71,8 @@ func main() {
 				msg.Text = "Digite /status"
 			case "status":
 				if site.TemperoDeMaeIsOpen() {
-					msg.Text = "O restaurante está aberto. Faça seu pedido"
+					msg.Text = "O restaurante está aberto. Faça seu pedido."
+					msg.ReplyMarkup = openRestaurantKeyboard
 				} else {
 					msg.Text = "O restaurante está fechado."
 				}

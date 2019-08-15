@@ -1,11 +1,10 @@
 package main
 
 import (
-	"os"
-	"strconv"
-
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/robfig/cron"
 	log "github.com/sirupsen/logrus"
+	"os"
 
 	"github.com/Valeyard1/marmitaz-telegram-bot/site"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -17,8 +16,11 @@ var (
 			tgbotapi.NewInlineKeyboardButtonURL("marmitaz.com", "https://marmitaz.pushsistemas.com.br/"),
 		),
 	)
-	token     = os.Getenv("TELEGRAM_BOT_TOKEN")
-	chatID, _ = strconv.ParseInt(os.Getenv("TELEGRAM_CHAT_ID"), 10, 64)
+	token             = os.Getenv("TELEGRAM_BOT_TOKEN")
+	DATABASE_HOST     = os.Getenv("DATABASE_HOST")
+	DATABASE_USER     = os.Getenv("DATABASE_USER")
+	DATABASE_PASSWORD = os.Getenv("DATABASE_PASSWORD")
+	DATABASE_NAME     = os.Getenv("DATABASE_NAME")
 )
 
 func main() {
@@ -28,58 +30,83 @@ func main() {
 	Formatter.FullTimestamp = true
 	log.SetFormatter(Formatter)
 
+	if token == "" {
+		log.Fatal("No token has been provided for bot to work. Provide the TELEGRAM_BOT_TOKEN environment variable")
+	}
+
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	bot.Debug = false
+	db := initializeDatabase()
+	defer db.Close()
 
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	c := cron.New()
+	// Send message at every minute for testing
+	err = c.AddFunc("0 * * * * *", func() {
+		var users []User
+		db.Find(&users)
+
+		for _, subscribed := range users {
+			var msg tgbotapi.MessageConfig
+			if isOpen, _ := site.TemperoDeMaeIsOpen(); isOpen == true {
+				msg = tgbotapi.NewMessage(subscribed.UserID, "O Restaurante abriu. Faça seu pedido")
+				msg.ReplyMarkup = openRestaurantKeyboard
+				log.Info("Sent a notification for ", subscribed.Username)
+			}
+			_, err = bot.Send(msg)
+		}
+	})
+	c.Start()
+
+	log.Infof("Authorized on account %s", bot.Self.UserName)
+	log.Info("Listening for new commands")
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
 	updates, err := bot.GetUpdatesChan(u)
 
-	c := cron.New()
-	// Every weekday on hour 7 through 12 (AM) at second 0 of every minute
-	c.AddFunc("0 7-12 * * 1-5", func() {
-		var msg tgbotapi.MessageConfig
-		if site.TemperoDeMaeIsOpen() {
-			msg = tgbotapi.NewMessage(chatID, "Open")
-		} else {
-			msg = tgbotapi.NewMessage(chatID, "Closed")
-		}
-		bot.Send(msg)
-	})
-	c.Start()
-
 	for update := range updates {
 		if update.Message == nil {
 			continue
 		}
-
+		log.Print(update.Message.Chat.ID)
 		log.Infof("[%s] sent a request to %s", update.Message.From.UserName, update.Message.Text)
 
 		if update.Message.IsCommand() {
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 			switch update.Message.Command() {
-			case "start":
-				msg.Text = "Sou uma interface para o site de restaurantes marmitaz.pushsistemas.com.br\nPara mais informações digite /help"
+			case "subscribe":
+				db.Create(&User{Username: update.Message.From.UserName, UserID: update.Message.Chat.ID})
+				msg.Text = "Você será notificado assim que o restaurante abrir. Para cancelar digite /cancel"
 			case "help":
-				msg.Text = "Digite /status"
+				msg.Text = `Comandos disponíveis:
+/subscribe - Você será notificado automaticamente assim que o restaurante abrir
+/cancel - Cancela a notificação automática
+/status - Verifica se o restaurante está aberto ou não
+/help - Mostra esta mensagem
+Para mais informações veja a descrição do bot.
+@marmitaz_bot`
 			case "status":
-				if site.TemperoDeMaeIsOpen() {
+				if isOpen, _ := site.TemperoDeMaeIsOpen(); isOpen == true {
 					msg.Text = "O restaurante está aberto. Faça seu pedido."
 					msg.ReplyMarkup = openRestaurantKeyboard
 				} else {
 					msg.Text = "O restaurante está fechado."
 				}
+			case "cancel":
+				db.Where("user_id = ?", update.Message.Chat.ID).Delete(User{})
+				db.Unscoped().Delete(&User{})
+				msg.Text = "Você não será mais notificado. Para se inscrever novamente digite /subscribe"
 			default:
-				msg.Text = "Q?"
+				msg.Text = "Opção não disponível, para listar os comandos disponíveis digite /help"
 			}
-			bot.Send(msg)
+			failedMSG, err := bot.Send(msg)
+			if err == nil {
+				log.Errorf("Message %s not sent.\n%v", failedMSG, err)
+			}
 		}
 
 	}

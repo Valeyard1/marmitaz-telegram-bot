@@ -11,3 +11,15 @@ It notifies the subscribed users whenever the restaurant opens, which is every w
 ---
 For more information, [subscribe](https://t.me/marmitaz_bot) to the bot.
 
+
+### Contributing
+This code is made with go modules, so all the dependencies are stored in the `go.*` files.
+To download them, just run `go build`.
+
+With just `go build` the code will not run, you have to specify the TOKEN for your bot, this is made through the `TELEGRAM_BOT_TOKEN` environment
+variable.
+The following steps can be done to get this working:
+```bash
+export TELEGRAM_BOT_TOKEN="<token>"
+go run bot.go database.go message.go
+```

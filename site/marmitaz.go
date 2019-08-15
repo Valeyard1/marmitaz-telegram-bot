@@ -8,7 +8,7 @@ import (
 )
 
 // TemperoDeMaeIsOpen returns a bool if the restaurant is open or not
-func TemperoDeMaeIsOpen() bool {
+func TemperoDeMaeIsOpen() (bool, error) {
 
 	exist := false
 
@@ -22,8 +22,9 @@ func TemperoDeMaeIsOpen() bool {
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		log.Printf("Link found: %s\n", e.Attr("href"))
 
+		// Testing with another site because this one is always open, so that I can work on that
 		if e.Text == "Pedidos Açaí" || e.Attr("href") == "pedidos_acai.php" {
-			exist = false
+			exist = true
 		}
 	})
 
@@ -32,7 +33,10 @@ func TemperoDeMaeIsOpen() bool {
 		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
 	})
 
-	c.Visit("https://marmitaz.pushsistemas.com.br/")
+	err := c.Visit("https://marmitaz.pushsistemas.com.br/")
+	if err != nil {
+		return false, err
+	}
 
-	return exist
+	return exist, nil
 }

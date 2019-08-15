@@ -1,12 +1,11 @@
 version: '3.6'
 
 services:
-  bot:
-    container_name: marmitaz_bot
-    image: marmitaz-telegram-bot
-    build:
-      context: .
+  database:
+    container_name: postgres_marmitaz
+    image: postgres:9.5
     environment:
-      - TELEGRAM_CHAT_ID=
-      - TELEGRAM_BOT_TOKEN=
-
+      POSTGRES_USER: marmitaz
+      POSTGRES_PASSWORD: z9FHfKG0O279
+    ports:
+      - "5432:5432"

@@ -6,7 +6,7 @@ It notifies the subscribed users whenever the restaurant opens, which is every w
 
 
 **TODO**:
-* Also notify the menu of the day (If you think it's a good feature, please vote +1 on Valeyard1/marmitaz-telegram-bot#2)
+* Also notify the menu of the day (If you think it's a good feature, please vote +1 on [#2](https://github.com/Valeyard1/marmitaz-telegram-bot/issues/2))
 
 ---
 For more information, [subscribe](https://t.me/marmitaz_bot) to the bot.

@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"github.com/jinzhu/gorm"
 	"log"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 type User struct {
@@ -12,16 +13,10 @@ type User struct {
 	UserID   int64  `gorm:"unique;not null"`
 }
 
-func (User) TableName() string {
-	return "marmitaz.public." + DATABASE_NAME
-}
-
 func initializeDatabase() *gorm.DB {
 
 	// dbname set on TableName
-	dbUri := fmt.Sprintf("host=%s user=%s port=5432 dbname='' sslmode=disable password=%s", DATABASE_HOST, DATABASE_USER,
-		DATABASE_PASSWORD) //Build connection string
-	db, err := gorm.Open("postgres", dbUri)
+	db, err := gorm.Open("sqlite3", DATABASE_HOST)
 	if err != nil {
 		log.Fatalf("Failed to connect to database %s\n%s", DATABASE_HOST, err.Error())
 	}

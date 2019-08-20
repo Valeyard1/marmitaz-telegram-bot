@@ -1,10 +1,10 @@
 package main
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"os"
+
 	"github.com/robfig/cron"
 	log "github.com/sirupsen/logrus"
-	"os"
 
 	"github.com/Valeyard1/marmitaz-telegram-bot/site"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -16,11 +16,8 @@ var (
 			tgbotapi.NewInlineKeyboardButtonURL("marmitaz.com", "https://marmitaz.pushsistemas.com.br/"),
 		),
 	)
-	token             = os.Getenv("TELEGRAM_BOT_TOKEN")
-	DATABASE_HOST     = os.Getenv("DATABASE_HOST")
-	DATABASE_USER     = os.Getenv("DATABASE_USER")
-	DATABASE_PASSWORD = os.Getenv("DATABASE_PASSWORD")
-	DATABASE_NAME     = os.Getenv("DATABASE_NAME")
+	token         = os.Getenv("TELEGRAM_BOT_TOKEN")
+	DATABASE_HOST = os.Getenv("DATABASE_HOST") // File of sqlite to use
 )
 
 func main() {

@@ -10,6 +10,7 @@ import (
 type User struct {
 	gorm.Model
 	Username string `gorm:"type:varchar(100)"`
+	Order    int    `gorm:"default:0"`
 	UserID   int64  `gorm:"unique;not null"`
 }
 

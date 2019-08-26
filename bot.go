@@ -123,7 +123,7 @@ func main() {
 			}
 			failedMSG, err := bot.Send(msg)
 			if err != nil {
-				log.Errorf("Message %s not sent.\n%v", failedMSG, err)
+				log.Errorf("Message %v not sent.\n%v", failedMSG, err)
 			}
 		}
 

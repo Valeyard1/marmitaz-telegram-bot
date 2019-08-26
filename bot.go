@@ -15,6 +15,10 @@ var (
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonURL("marmitaz.com", "https://marmitaz.pushsistemas.com.br/"),
 		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("Já pedi", "0"),
+			tgbotapi.NewInlineKeyboardButtonData("Vou pedir", "1"),
+		),
 	)
 	token         = os.Getenv("TELEGRAM_BOT_TOKEN")
 	DATABASE_HOST = os.Getenv("DATABASE_HOST") // File of sqlite to use

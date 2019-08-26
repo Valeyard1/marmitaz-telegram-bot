@@ -100,7 +100,7 @@ func main() {
 		if update.Message.IsCommand() {
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 			switch update.Message.Command() {
-			case "subscribe":
+			case "start":
 				db.Create(&User{Username: update.Message.From.UserName, UserID: update.Message.Chat.ID})
 				msg.Text = "Você será notificado assim que o restaurante abrir. Para cancelar digite /cancel"
 			case "help":

@@ -75,8 +75,25 @@ func main() {
 	updates, err := bot.GetUpdatesChan(u)
 
 	for update := range updates {
+
+		if update.CallbackQuery != nil {
+			var text string
+
+			switch update.CallbackQuery.Data {
+			case "0":
+				text = "Até amanhã :D"
+				var user User
+				db.Model(&user).Where("user_id = ?", update.CallbackQuery.From.ID).Update("order", 1)
+			}
+
+			bot.AnswerCallbackQuery(tgbotapi.NewCallback(update.CallbackQuery.ID, "ok"))
+
+			bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, text))
+		}
+
 		if update.Message == nil {
 			continue
+
 		}
 		log.Print(update.Message.Chat.ID)
 		log.Infof("[%s] sent a request to %s", update.Message.From.UserName, update.Message.Text)

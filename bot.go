@@ -93,10 +93,9 @@ func main() {
 
 		if update.Message == nil {
 			continue
-
 		}
-		log.Print(update.Message.Chat.ID)
-		log.Infof("[%s] sent a request to %s", update.Message.From.UserName, update.Message.Text)
+
+		log.Infof("[%s] - (%d) sent a request to %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
 
 		if update.Message.IsCommand() {
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")

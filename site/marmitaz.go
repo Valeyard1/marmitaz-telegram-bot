@@ -20,8 +20,6 @@ func TemperoDeMaeIsOpen() (bool, error) {
 	)
 
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
-		log.Printf("Link found: %s\n", e.Attr("href"))
-
 		if e.Text == "Tempero de Mãe" || e.Attr("href") == "cardapio_mae.php?r=Tempero de Mãe" {
 			exist = true
 		}

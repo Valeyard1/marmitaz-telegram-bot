@@ -116,6 +116,7 @@ func main() {
 				msg.Text = helpMessage()
 			case "status":
 				if isOpen, _ := site.TemperoDeMaeIsOpen(); isOpen == true {
+					log.Info("Restaurant is open")
 					msg.Text = "O restaurante está aberto. Faça seu pedido."
 					msg.ReplyMarkup = openRestaurantKeyboard
 				} else {

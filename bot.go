@@ -88,8 +88,8 @@ func main() {
 		if update.CallbackQuery != nil {
 			var text string
 
-			switch update.CallbackQuery.Data {
-			case "0":
+			// If the person has selected the option "Já pedi"
+			if update.CallbackQuery.Data == "0" {
 				text = "Até amanhã :D"
 				var user User
 				db.Model(&user).Where("user_id = ?", update.CallbackQuery.From.ID).Update("order", 1)

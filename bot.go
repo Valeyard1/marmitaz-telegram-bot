@@ -125,7 +125,7 @@ func main() {
 			case "cancel":
 				db.Where("user_id = ?", update.Message.Chat.ID).Delete(User{})
 				db.Unscoped().Delete(&User{})
-				msg.Text = "Você não será mais notificado. Para se inscrever novamente digite /subscribe"
+				msg.Text = "Você não será mais notificado. Para se inscrever novamente digite /start"
 			case "querocafe":
 				msg.Text = queroCafeMessage()
 			default:

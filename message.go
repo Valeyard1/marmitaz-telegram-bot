@@ -16,7 +16,7 @@ Minha irmã é amiga de um advogado que ta ajudando a gente, ele entrou em conta
 
 func helpMessage() string {
 	msg := `Comandos disponíveis:
-/subscribe - Você será notificado automaticamente assim que o restaurante abrir
+/start - Você será notificado automaticamente assim que o restaurante abrir
 /cancel - Cancela a notificação automática
 /status - Verifica se o restaurante está aberto ou não
 /help - Mostra esta mensagem

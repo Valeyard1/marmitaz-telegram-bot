@@ -44,8 +44,8 @@ func main() {
 	defer db.Close()
 
 	c := cron.New()
-	// Every weekday on hour 7 through 12 (AM) at second 0 of every minute
-	c.AddFunc("0 * 7-11 * * 1-5", func() {
+	// Every weekday on hour 7 through 12 (AM) at second 0 of every 0 minute
+	c.AddFunc("0 0 7-12 * * 1-5", func() {
 		var users []User
 		db.Find(&users)
 
@@ -60,8 +60,8 @@ func main() {
 				msg = tgbotapi.NewMessage(subscribed.UserID, "O Restaurante abriu. Faça seu pedido")
 				msg.ReplyMarkup = openRestaurantKeyboard
 				log.Info("Sent a notification for ", subscribed.Username)
+				_, err = bot.Send(msg)
 			}
-			_, err = bot.Send(msg)
 		}
 	})
 

@@ -44,8 +44,8 @@ func main() {
 	defer db.Close()
 
 	c := cron.New()
-	// Every weekday on hour 7 through 12 (AM) at second 0 of every half hour
-	err = c.AddFunc("0 30 7-11 * * 1-5", func() {
+	// Every weekday on hour 7 through 12 (AM) at second 0 of every minute
+	c.AddFunc("0 * 7-11 * * 1-5", func() {
 		var users []User
 		db.Find(&users)
 
@@ -56,13 +56,22 @@ func main() {
 
 		for _, subscribed := range users {
 			var msg tgbotapi.MessageConfig
-			if restaurantIsOpen {
+			if restaurantIsOpen && subscribed.Order == 0 {
 				msg = tgbotapi.NewMessage(subscribed.UserID, "O Restaurante abriu. Faça seu pedido")
 				msg.ReplyMarkup = openRestaurantKeyboard
 				log.Info("Sent a notification for ", subscribed.Username)
 			}
 			_, err = bot.Send(msg)
 		}
+	})
+
+	// Declare that everyone hasn't ordered for the next day
+	c.AddFunc("@midnight", func() {
+		var user User
+		db.First(&user)
+
+		user.Order = 0
+		db.Save(&user)
 	})
 	c.Start()
 

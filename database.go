@@ -7,6 +7,8 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
+// User ...
+// 0 if the person hasn't ordered yet
 type User struct {
 	gorm.Model
 	Username string `gorm:"type:varchar(100)"`

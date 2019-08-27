@@ -1,5 +1,6 @@
 # Marmitaz Telegram Bot
 **NOTE**: This bot aims to be a brazilian Telegram bot
+
 This is a bot for telegram to interact with the site http://marmitaz.pushsistemas.com.br
 
 It notifies the subscribed users whenever the restaurant opens, which is every weekday around 7~8 AM.  
